@@ -1,0 +1,16 @@
+[Unit]
+Description=webapp - making your env variables rad
+After=network.target
+
+[Service]
+Environment=NODE_PORT=3000
+Type=simple
+User=ec2-user
+ExecStart=/usr/bin/node /home/ec2-user/webservice/index.js
+Restart=always
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,15 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /home/ec2-user/webservice
+hooks:      
+  ApplicationStart:
+    - location: scripts/run.sh
+      timeout: 300
+      runas: ec2-user
+
+  ValidateService:
+    - location: scripts/validateservice.sh
+      timeout: 300
+      runas: ec2-user
