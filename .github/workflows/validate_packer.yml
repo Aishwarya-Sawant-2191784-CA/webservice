@@ -1,0 +1,58 @@
+name: Packer Validation
+
+env:
+  CI: true
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  ssh_username: "ec2-user"
+  GITHUB_REPO_PATH: ${{ github.workspace }}
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  packer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+
+      #build zip file
+      - name: build zip file
+        run: |
+          echo "PWD: $(pwd)"
+          cd ../
+          zip -r webservice.zip webservice
+          ls -l
+          echo "PWD: $(pwd)"
+          cd webservice
+          echo "mkdir"; mkdir appDir
+          cp ../webservice.zip appDir
+          ls -l appDir
+          echo $GITHUB_PATH
+
+      # build ami
+      - name: Build Artifact
+        uses: hashicorp/packer-github-actions@master
+        with:
+          command: build
+          arguments: "-color=false -on-error=abort"
+          target: ./packer/ami.json.pkr.hcl
+      
+      - name: Configuring AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.GHUSER_ACTION_KEY }}
+          aws-secret-access-key: ${{ secrets.GHUSER_SECRET_KEY }}
+          aws-region: us-east-1
+
+      - name: Copying artifact to S3
+        run: |
+          rm -rf aws
+          aws deploy push --application-name csye6225webapp --description "Copying the latest revision for csye6225webapplication-${{ github.sha }}.zip" --ignore-hidden-files --s3-location s3://codedeploy.aishwaryasawant.me/csye6225-webapplication-${{ github.sha}}.zip  --source .
+          
+      - name: Using code deploy
+        run: |
+          aws deploy create-deployment --application-name csye6225webapp --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name csye6225-webapp-deployment --file-exists-behavior OVERWRITE --s3-location bucket=codedeploy.aishwaryasawant.me,key=csye6225-webapplication-${{ github.sha }}.zip,bundleType=zip
+
