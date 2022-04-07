@@ -40,6 +40,7 @@ ls -ltr
 chown ec2-user:ec2-user /home/ec2-user/webservice
 cd webservice
 sudo npm install
+npm install --save statsd-client
 mkdir logs
 cd /home/ec2-user/webservice/logs/
 touch index.log
@@ -47,3 +48,5 @@ cd ..
 sudo pm2 start index.js -l "/home/ec2-user/webservice/logs/index.log" -f
 sudo pm2 startup systemd
 sudo pm2 save
+sudo yum install amazon-cloudwatch-agent -y
+sudo cp cloudwatch-config.json /opt/
