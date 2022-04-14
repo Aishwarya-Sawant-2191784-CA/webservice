@@ -2,10 +2,10 @@ const env = process.env;
 
 const config = {
     db: {
-        host: env.HOST,
-        user: env.USER,
-        password: env.PASSWORD,
-        database: env.DB,
+        host: env.DB_HOST,
+        user: env.DB_USER,
+        password: env.DB_PASSWORD,
+        database: env.DB_NAME,
         dialect: "mysql",
         port:3306,
         pool: {
@@ -14,7 +14,9 @@ const config = {
             acquire: 30000,
             idle: 10000
         }
-    }
+    },
+    METRICS_HOSTNAME: "localhost",
+    METRICS_PORT: 8125
 };
 
 module.exports = config;

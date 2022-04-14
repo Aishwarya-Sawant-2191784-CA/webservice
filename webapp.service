@@ -6,7 +6,7 @@ After=network.target
 Environment=NODE_PORT=3000
 Type=simple
 User=ec2-user
-ExecStart=/usr/bin/node /home/ec2-user/webservice/index.js
+ExecStart=/usr/bin/node /home/ec2-user/node-app/index.js
 Restart=always
 RestartSec=10
 StandardOutput=syslog
