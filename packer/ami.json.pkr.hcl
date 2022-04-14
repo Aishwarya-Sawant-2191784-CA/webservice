@@ -40,10 +40,6 @@ variable "ssh_username" {
   default = "ec2-user"
 }
 
-variable "subnet_id" {
-  type    = string
-  default = "subnet-06aa189b0e9d7ec2a"
-}
 
 variable "GITHUB_PATH" {
   default = env("GITHUB_REPO_PATH")
