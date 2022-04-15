@@ -14,3 +14,5 @@ sudo pm2 start index.js -l "/home/ec2-user/webservice/logs/index.log" -f
 sudo pm2 startup systemd
 sudo pm2 save
 sudo pm2 restart all --update-env
+sudo mv cloudwatch-config.json /opt/cloudwatch-config.json
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/cloudwatch-config.json -s

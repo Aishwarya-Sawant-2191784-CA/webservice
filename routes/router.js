@@ -3,11 +3,14 @@ const baseAuthentication = require('../util/auth.js');
 const userController = require('../Controller/usersController.js');
 const imageController = require('../Controller/imageController.js');
 const multer = require('multer');
+const SDC = require('statsd-client');
+const sdc = new SDC({host: '127.0.0.1'});
 
 // GET Method
 
 router.get("/healthz", (req, res) => {
-    console.log("Server Is Up And Running")
+    sdc.increment('endpoint.Healthz.http.get');
+    console.log("Is it hitting?")
     res.sendStatus(200).json();
 });
 

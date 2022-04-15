@@ -4,10 +4,13 @@ const bcrypt = require('bcrypt');
 const {
     v4: uuidv4
 } = require('uuid');
+const SDC = require('statsd-client');
+const sdc = new SDC({host: '127.0.0.1'});
 
 // Create a User
 
 async function createUser(req, res, next) {
+    sdc.increment('endpoint.v1.user.http.post');
     var hash = await bcrypt.hash(req.body.password, 10);
     const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
     if (!emailRegex.test(req.body.username)) {
@@ -58,6 +61,7 @@ async function createUser(req, res, next) {
 //Get a User
 
 async function getUser(req, res, next) {
+    sdc.increment('endpoint.v1.user.self.http.get');
     const user = await getUserByUsername(req.user.username);
     if (user) {
         res.status(200).send({
@@ -78,6 +82,7 @@ async function getUser(req, res, next) {
 // Update a user
 
 async function updateUser(req, res, next) {
+    sdc.increment('endpoint.v1.user.self.http.put');
     if (req.body.username != req.user.username) {
         res.status(400);
     }
