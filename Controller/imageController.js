@@ -10,6 +10,8 @@ const path = require('path');
 const fileService = require('../services/file');
 const AWS = require('aws-sdk');
 const fs = require('fs')
+const SDC = require('statsd-client');
+const sdc = new SDC({host: '127.0.0.1'});
 
 //Creating a new instance of S3:
 AWS.config.update({
@@ -24,6 +26,7 @@ s3 = new AWS.S3({ apiVersion: "2006-03-01" });
 
 
 async function updateUserPic(req, res, next) {
+    sdc.increment('endpoint.v1.user.self.pic.http.post');
     const user = await getUserByUsername(req.user.username);
 
     var image = await Image.findOne({
@@ -77,6 +80,7 @@ async function updateUserPic(req, res, next) {
 // Get pic
 
 async function getUserPic(req, res, next) {
+    sdc.increment('endpoint.v1.user.self.pic.http.get');
     const user = await getUserByUsername(req.user.username);
 
     var image = await Image.findOne({
@@ -103,6 +107,7 @@ async function getUserPic(req, res, next) {
 // Delete pic
 
 async function deleteUserPic(req, res, next) {
+    sdc.increment('endpoint.v1.user.self.pic.http.delete');
     const user = await getUserByUsername(req.user.username);
 
     var image = await Image.findOne({

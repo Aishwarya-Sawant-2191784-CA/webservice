@@ -2,7 +2,7 @@
 CSYE6225 Workspace
 
 
-# Assignment-7
+# Assignment-8
 
 Pre-requisites:
 - Install Node.js 
@@ -26,3 +26,4 @@ Testing:
 
 - Running tests using NPM Scripts
     - npm run test
+    
