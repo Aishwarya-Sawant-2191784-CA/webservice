@@ -3,13 +3,14 @@ os: linux
 files:
   - source: /
     destination: /home/ec2-user/webservice
+file_exists_behavior: OVERWRITE
 hooks:      
   ApplicationStart:
     - location: scripts/run.sh
-      timeout: 300
+      timeout: 600
       runas: ec2-user
 
   ValidateService:
     - location: scripts/validateservice.sh
-      timeout: 300
+      timeout: 600
       runas: ec2-user
