@@ -10,23 +10,19 @@ const path = require('path');
 const fileService = require('../services/file');
 const AWS = require('aws-sdk');
 const fs = require('fs')
+const dbConfig = require('../config/configDB.js');
+const logger = require("../config/logger");
 const SDC = require('statsd-client');
-const sdc = new SDC({host: '127.0.0.1'});
+const sdc = new SDC({host: dbConfig.METRICS_HOSTNAME, port: dbConfig.METRICS_PORT});
 
 //Creating a new instance of S3:
 AWS.config.update({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_ACCESS_KEY_SECRET,
     region: process.env.AWS_REGION
 });
-s3 = new AWS.S3({ apiVersion: "2006-03-01" });
-// const bucket = process.env.AWS_BUCKET_NAME;
+const s3 = new AWS.S3();
 
 // Update pic
-
-
 async function updateUserPic(req, res, next) {
-    sdc.increment('endpoint.v1.user.self.pic.http.post');
     const user = await getUserByUsername(req.user.username);
 
     var image = await Image.findOne({
@@ -58,7 +54,7 @@ async function updateUserPic(req, res, next) {
     const mimetype = filetypes.test(req.file.mimetype);
 
     if (!mimetype && !extname) {
-
+        logger.error("Unsupported Image File Type");
         res.status(400).send({
             message: 'Unsupported File Type'
         });
@@ -78,9 +74,7 @@ async function updateUserPic(req, res, next) {
 }
 
 // Get pic
-
 async function getUserPic(req, res, next) {
-    sdc.increment('endpoint.v1.user.self.pic.http.get');
     const user = await getUserByUsername(req.user.username);
 
     var image = await Image.findOne({
@@ -98,6 +92,7 @@ async function getUserPic(req, res, next) {
             user_id: image.user_id
         });
     } else {
+        logger.error("getUserPic No Image found!");
         res.status(404).send({
             message: 'No Image found!'
         });
@@ -107,7 +102,6 @@ async function getUserPic(req, res, next) {
 // Delete pic
 
 async function deleteUserPic(req, res, next) {
-    sdc.increment('endpoint.v1.user.self.pic.http.delete');
     const user = await getUserByUsername(req.user.username);
 
     var image = await Image.findOne({

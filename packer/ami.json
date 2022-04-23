@@ -21,7 +21,7 @@
             "ami_name": "csye6225_{{timestamp}}",
             "ami_description": "Linux 2 AMI for csye6225",
             "ami_users": [
-                ""
+                "981331903688"
             ],
             "ami_block_device_mappings": [
                 {
