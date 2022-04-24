@@ -120,7 +120,7 @@ async function createUser(req, res, next) {
 
                     Message: JSON.stringify(msg),
                     Subject: randomnanoID,
-                    TopicArn: 'arn:aws:sns:us-east-1:981331903688:verify_email'
+                    TopicArn: 'arn:aws:sns:us-east-1:155431625085:verify_email'
 
                 }
                 var publishTextPromise = await sns.publish(params).promise();
